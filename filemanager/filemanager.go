@@ -61,6 +61,26 @@ func Read(args []string) {
 	}
 }
 
+func Update(args []string) {
+	fs := flag.NewFlagSet("update", flag.ExitOnError)
+	file := fs.String("file", "file.txt", "File to update")
+	append := fs.String("append", "Bye, World! ", "Content of the file")
+
+	err := fs.Parse(args)
+	if err != nil {
+		fmt.Printf("Error parsing flags: %v\n", err)
+	}
+
+	filePath := "files/" + *file
+
+	err = UpdateFile(filePath, *append)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+	}
+
+	color.Green("File update success!")
+}
+
 func CreateFile(filePath, content string) error {
 
 	if FileExists(filePath) {
@@ -99,6 +119,24 @@ func ReadFile(filePath string) error {
 	}
 
 	if err := scanner.Err(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func UpdateFile(filePath, content string) error {
+	if !FileExists(filePath) {
+		return fmt.Errorf("error: the file doesn't exists and you cannot update it")
+	}
+
+	f, err := os.OpenFile(filePath, os.O_APPEND|os.O_RDWR, 0644)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	if _, err := f.Write([]byte("\n" + content)); err != nil {
 		return err
 	}
 
