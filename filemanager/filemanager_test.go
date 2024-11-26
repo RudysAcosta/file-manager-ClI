@@ -52,6 +52,28 @@ func TestCreateFile(t *testing.T) {
 	}
 }
 
+func TestReadFile(t *testing.T) {
+	os.Args = []string{"cmd", "--file=testfile.txt"}
+
+	file := flag.String("file", "file.txt", "File to read")
+	flag.Parse()
+
+	setupTestDirectory()
+
+	filePath := "files/" + *file
+
+	// delete the file when de function finish
+	defer os.Remove(filePath)
+
+	content := "Hello, Test!"
+	err := os.WriteFile(filePath, []byte(content), 0644)
+	if err != nil {
+		t.Fatalf("failed to create test file: %v", err)
+	}
+
+	ReadFile(filePath)
+}
+
 func setupTestDirectory() {
 	if _, err := os.Stat("files"); os.IsNotExist(err) {
 		os.Mkdir("files", 0755)

@@ -20,6 +20,8 @@ func main() {
 		interactive()
 	case "create":
 		filemanager.Create(os.Args[2:])
+	case "read":
+		filemanager.Read(os.Args[2:])
 	default:
 		fmt.Println("Invalid option")
 	}
