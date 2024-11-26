@@ -133,6 +133,10 @@ func TestDeleteFile(t *testing.T) {
 	}
 }
 
+func TestListFiles(t *testing.T) {
+
+}
+
 func setupTestDirectory() {
 	if _, err := os.Stat("files"); os.IsNotExist(err) {
 		os.Mkdir("files", 0755)

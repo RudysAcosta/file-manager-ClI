@@ -85,6 +85,43 @@ func Update(args []string) {
 	color.Green("File update success!")
 }
 
+func List() {
+	path := "files"
+
+	files, err := os.ReadDir(path)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+	}
+
+	if len(files) == 0 {
+		fmt.Println("Dir empty")
+		return
+	}
+
+	for _, file := range files {
+		err := showFileDetail(&file)
+		if err != nil {
+			fmt.Printf("Error: %v\n", err)
+			return
+		}
+	}
+}
+
+func showFileDetail(file *os.DirEntry) error {
+
+	info, err := (*file).Info()
+	if err != nil {
+		return err
+	}
+
+	fmt.Println()
+	fmt.Println("Name:", (*file).Name())
+	fmt.Printf("Size: %d KB\n", info.Size())
+	fmt.Println("Update:", info.ModTime().Format("2006-01-02 03:04 PM"))
+
+	return nil
+}
+
 func Delete(args []string) {
 	fs := flag.NewFlagSet("update", flag.ExitOnError)
 	file := fs.String("file", "file.txt", "File to update")
