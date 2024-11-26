@@ -101,9 +101,35 @@ func TestUpdateFile(t *testing.T) {
 		t.Fatalf("failed to read the created file: %v", err)
 	}
 
-	expected := content + *append
+	expected := content + "\n" + *append
 	if string(data) != expected {
 		t.Errorf("expected file content '%s', got '%s'", expected, string(data))
+	}
+}
+
+func TestDeleteFile(t *testing.T) {
+	os.Args = []string{"cmd", "--file=testfile.txt"}
+
+	file := flag.String("file", "file.txt", "File to delete")
+	flag.Parse()
+
+	setupTestDirectory()
+
+	filePath := "files/" + *file
+
+	// delete the file when de function finish
+	defer os.Remove(filePath)
+
+	content := "Hello, Test!"
+	err := os.WriteFile(filePath, []byte(content), 0644)
+	if err != nil {
+		t.Fatalf("failed to create test file: %v", err)
+	}
+
+	DeleteFile(filePath)
+
+	if FileExists(filePath) {
+		t.Errorf("expected file to be deleted: %s", *file)
 	}
 }
 

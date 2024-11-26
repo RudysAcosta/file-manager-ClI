@@ -24,6 +24,8 @@ func main() {
 		filemanager.Read(os.Args[2:])
 	case "update":
 		filemanager.Update(os.Args[2:])
+	case "delete":
+		filemanager.Delete(os.Args[2:])
 	default:
 		fmt.Println("Invalid option")
 	}

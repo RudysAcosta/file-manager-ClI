@@ -31,6 +31,7 @@ func Create(args []string) {
 	err := fs.Parse(args)
 	if err != nil {
 		fmt.Printf("Error parsing flags: %v\n", err)
+		return
 	}
 
 	filePath := "files/" + *file
@@ -51,6 +52,7 @@ func Read(args []string) {
 	err := fs.Parse(args)
 	if err != nil {
 		fmt.Printf("Error parsing flags: %v\n", err)
+		return
 	}
 
 	filePath := "files/" + *file
@@ -69,6 +71,7 @@ func Update(args []string) {
 	err := fs.Parse(args)
 	if err != nil {
 		fmt.Printf("Error parsing flags: %v\n", err)
+		return
 	}
 
 	filePath := "files/" + *file
@@ -76,9 +79,31 @@ func Update(args []string) {
 	err = UpdateFile(filePath, *append)
 	if err != nil {
 		fmt.Printf("Error: %v\n", err)
+		return
 	}
 
 	color.Green("File update success!")
+}
+
+func Delete(args []string) {
+	fs := flag.NewFlagSet("update", flag.ExitOnError)
+	file := fs.String("file", "file.txt", "File to update")
+
+	err := fs.Parse(args)
+	if err != nil {
+		fmt.Printf("Error parsing flags: %v\n", err)
+		return
+	}
+
+	filePath := "files/" + *file
+
+	err = DeleteFile(filePath)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		return
+	}
+
+	color.Green("File remove success!")
 }
 
 func CreateFile(filePath, content string) error {
@@ -137,6 +162,19 @@ func UpdateFile(filePath, content string) error {
 	defer f.Close()
 
 	if _, err := f.Write([]byte("\n" + content)); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func DeleteFile(filePath string) error {
+	if !FileExists(filePath) {
+		return fmt.Errorf("error: the file doesn't exists and you cannot delete it")
+	}
+
+	err := os.Remove(filePath)
+	if err != nil {
 		return err
 	}
 
